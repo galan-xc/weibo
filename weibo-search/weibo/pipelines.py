@@ -187,7 +187,7 @@ class MysqlPipeline(object):
                 retweet_id varchar(20),
                 keyword varchar(255) CHARACTER SET utf8 DEFAULT NULL,
                 PRIMARY KEY (id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"""
         self.cursor.execute(sql)
 
     def open_spider(self, spider):
