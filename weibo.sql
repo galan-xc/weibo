@@ -1,0 +1,20 @@
+CREATE TABLE `weibo` (
+  `id` varchar(20) NOT NULL,
+  `bid` varchar(12) NOT NULL,
+  `user_id` varchar(20) DEFAULT NULL,
+  `screen_name` varchar(30) DEFAULT NULL,
+  `text` varchar(2000) DEFAULT NULL,
+  `article_url` varchar(100) DEFAULT NULL,
+  `topics` varchar(200) DEFAULT NULL,
+  `at_users` varchar(1000) DEFAULT NULL,
+  `pics` varchar(3000) DEFAULT NULL,
+  `video_url` varchar(1000) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `source` varchar(30) DEFAULT NULL,
+  `attitudes_count` int DEFAULT NULL,
+  `comments_count` int DEFAULT NULL,
+  `reposts_count` int DEFAULT NULL,
+  `retweet_id` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
