@@ -12,6 +12,7 @@ class FetchSpider(RedisSpider):
     name = 'fetch'
     allowed_domains = ['weibo.cm']
     redis_key = "cmt:start_urls"
+    cookie_list = []
 
     def make_request_from_data(self, data):
         """Returns a Request instance from data coming from Redis.

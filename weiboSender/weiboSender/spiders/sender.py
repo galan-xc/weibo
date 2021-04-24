@@ -7,6 +7,8 @@ from scrapy_redis.spiders import RedisSpider
 from scrapy_redis.utils import bytes_to_str
 
 from weiboSender.items import WeibosenderItem
+from weiboSender.settings import REDIS_COOKIE_LIST_KEY
+from .redisUtil import get_def_redis_db
 
 class SenderSpider(RedisSpider):
     name = 'sender'
@@ -41,14 +43,10 @@ class SenderSpider(RedisSpider):
             "Spider.start_requests method in future Scrapy releases. "
             "Please override Spider.start_requests method instead."
         )
-        cookie = {
-            "SUB": "*",
-            "_T_WM": "*",
-            "WEIBOCN_FROM": "*",
-            "MLOGIN": "*",
-            "M_WEIBOCN_PARAMS": "luicode%*",
-            "XSRF-TOKEN": "*",
-        }
+        cookie = {}
+        with get_def_redis_db() as db:
+            cookie = db.lpop(REDIS_COOKIE_LIST_KEY)
+        self.logger.info("get cookie from redis: {}".format(cookie))
         data.update({
             "cookie": cookie
         })
