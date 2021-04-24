@@ -29,5 +29,14 @@ def add_cookie():
     return InfoRet(params)
 
 
+@app.route("/cookie/len")
+def len_cookie():
+    length = -1
+    with get_def_redis_db() as db:
+        length = db.llen(cookie_list_key)
+
+    return InfoRet({"length": length})
+
+
 if __name__ == "__main__":
     app.run("0.0.0.0", 8002, debug=True)
