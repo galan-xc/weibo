@@ -46,6 +46,7 @@ class SenderSpider(RedisSpider):
         cookie = {}
         with get_def_redis_db() as db:
             cookie = db.lpop_dict(REDIS_COOKIE_LIST_KEY)
+            db.rpush_dict(REDIS_COOKIE_LIST_KEY, cookie)
         self.logger.info("get cookie from redis: {}".format(cookie))
         data.update({
             "cookie": cookie
