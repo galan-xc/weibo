@@ -6,6 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 
 BOT_NAME = 'cmtFetcher'
 
@@ -106,14 +107,15 @@ ITEM_PIPELINES = {
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PARAMS = {
-    'password': 'password',
+    'password': os.environ.get('REDIS_PASSWORD', "123456"),
     "db": 1
 }
 REDIS_PORT = 6379
 
-
 MYSQL_HOST = '127.0.0.1'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'password'
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', "123456")
 MYSQL_DATABASE = 'weibo'
+
+REDIS_COOKIE_LIST_KEY = os.environ.get('REDIS_COOKIE_LIST_KEY', "redis_cookie_list")

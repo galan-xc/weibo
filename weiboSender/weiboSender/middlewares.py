@@ -82,6 +82,8 @@ class WeibosenderDownloaderMiddleware:
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
+        if response.status != 200:
+            spider.logger.info("{} error status code {}".format(request.url, response.status))
 
         # Must either;
         # - return a Response object

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 BOT_NAME = 'weibo'
 SPIDER_MODULES = ['weibo.spiders']
@@ -11,7 +12,7 @@ LOG_LEVEL = 'DEBUG'
 DOWNLOAD_DELAY = 3
 DEFAULT_REQUEST_HEADERS = {
     'Accept':
-    'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
     'cookie': r'*'
 }
@@ -51,10 +52,10 @@ FILES_STORE = './'
 MYSQL_HOST = 'ip'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'password'
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', "123456")
 MYSQL_DATABASE = 'weibo'
 
 REDIS_HOST = "ip"
 REDIS_PORT = 6379
 REDIS_DB_INDEX = 1
-REDIS_PASSWORD = "password"
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', "123456")
