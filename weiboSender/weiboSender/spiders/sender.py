@@ -17,17 +17,6 @@ class SenderSpider(RedisSpider):
     redis_key = "sender:msg"
 
     def make_request_from_data(self, data):
-        """Returns a Request instance from data coming from Redis.
-
-        By default, ``data`` is an encoded URL. You can override this method to
-        provide your own message decoding.
-
-        Parameters
-        ----------
-        data : bytes
-            Message from redis.
-
-        """
         self.logger.debug("recv data-> {}({})".format(data, type(data)))
         data = ujson.loads(bytes_to_str(data, self.redis_encoding))
         self.logger.debug("trans data-> {}({})".format(data, type(data)))
@@ -43,14 +32,7 @@ class SenderSpider(RedisSpider):
             "Spider.start_requests method in future Scrapy releases. "
             "Please override Spider.start_requests method instead."
         )
-        cookie = {}
-        with get_def_redis_db() as db:
-            cookie = db.lpop_dict(REDIS_COOKIE_LIST_KEY)
-            db.rpush_dict(REDIS_COOKIE_LIST_KEY, cookie)
-        self.logger.info("get cookie from redis: {}".format(cookie))
-        data.update({
-            "cookie": cookie
-        })
+        cookie = data["cookie"]
         return Request(url, method="GET", meta=data, dont_filter=True, headers={
             ':authority': 'm.weibo.cn',
             ':method': 'GET',

@@ -59,3 +59,6 @@ def get_def_redis_db():
     except BaseException as e:
         print("init redis connect error: {}".format(e))
     return db
+
+
+
