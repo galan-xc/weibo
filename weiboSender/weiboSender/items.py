@@ -11,3 +11,4 @@ class WeibosenderItem(scrapy.Item):
     uid = scrapy.Field()
     msg = scrapy.Field()
     ret = scrapy.Field()
+    create_time = scrapy.Field()

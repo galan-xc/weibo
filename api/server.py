@@ -23,14 +23,17 @@ def add_cookie():
         return ErrorRet(msg="Missing required parameter")
     if "password" not in params:
         return ErrorRet(msg="Missing required parameter")
+    if "uid" not in params:
+        return ErrorRet(msg="Missing required parameter")
     tmp = params.to_dict()
     ret = -1
     cookie_str = params.get("cookie")
     md5_obj = hashlib.md5()
     md5_obj.update(cookie_str.encode("utf-8"))
-    uid = md5_obj.hexdigest()
+    cuid = md5_obj.hexdigest()
     account = params.get("account")
     password = params.get("password")
+    uid = params.get("uid")
 
     # cookie_list = cookie_str.split(";")
     # cookie = {}
@@ -39,9 +42,9 @@ def add_cookie():
     #     cookie[tmp[0].strip()] = tmp[2].strip()
     with get_def_mysql_db() as db:
         cursor = db.cursor()
-        sql = "insert into cookie(uid, account, password, cookie_str, create_time)" \
-              " values('%s', '%s', '%s', '%s', '%s')" % (
-                  uid, account, password, cookie_str, datetime.datetime.now()
+        sql = "insert into cookie(cuid, uid, account, password, cookie_str, create_time)" \
+              " values('%s', '%s', '%s', '%s', '%s', '%s')" % (
+                  cuid, uid, account, password, cookie_str, datetime.datetime.now()
               )
         try:
             ret = cursor.execute(sql)

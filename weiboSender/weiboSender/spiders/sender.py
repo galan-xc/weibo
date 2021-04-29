@@ -1,6 +1,7 @@
 import ujson
 import re
 import warnings
+import datetime
 
 from scrapy.http import Request, FormRequest
 from scrapy_redis.spiders import RedisSpider
@@ -87,5 +88,6 @@ class SenderSpider(RedisSpider):
         item["uid"] = response.meta["uid"]
         item["msg"] = response.meta["msg"]
         item["ret"] = data["ok"]
+        item["create_time"] = datetime.datetime.now()
         yield item
 

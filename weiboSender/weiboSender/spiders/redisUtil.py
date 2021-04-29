@@ -48,6 +48,15 @@ class RedisDB(redis.Redis):
             return _unserialize_obj(obj)
         return obj
 
+    def hset_obj(self, name, k, v):
+        return self.hset(name, k, _serialize_obj(v))
+
+    def hget_obj(self, name, k):
+        obj = self.hget(name, k)
+        if obj is not None:
+            return _unserialize_obj(obj)
+        return obj
+
 
 password = os.environ.get('REDIS_PASSWORD', "123456")
 
@@ -59,6 +68,3 @@ def get_def_redis_db():
     except BaseException as e:
         print("init redis connect error: {}".format(e))
     return db
-
-
-
