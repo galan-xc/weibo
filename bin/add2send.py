@@ -4,8 +4,8 @@ import ujson
 redis_key = "sender:msg"
 db_conn = redis.StrictRedis(host="47.98.129.65", port=6379, db=1, password="1690036618")
 data = {
-    "uid": "5985057641",
-    "msg": "TD",
+    "uid": "7601521306",
+    "msg": "Hello World",
 }
 print(data)
 cds = ujson.dumps(data)

@@ -103,3 +103,18 @@ class WeibosenderDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+from scrapy import signals
+from w3lib.http import basic_auth_header
+
+
+class ProxyDownloaderMiddleware:
+
+    def process_request(self, request, spider):
+        proxy = "tps147.kdlapi.com:15818"
+        request.meta['proxy'] = "http://%(proxy)s" % {'proxy': proxy}
+        # 用户名密码认证
+        request.headers['Proxy-Authorization'] = basic_auth_header('t11970353702045', 'hirwtfo2')  # 白名单认证可注释此行
+        request.headers["Connection"] = "close"
+        return None

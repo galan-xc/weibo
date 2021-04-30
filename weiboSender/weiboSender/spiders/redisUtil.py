@@ -126,3 +126,11 @@ def add_to_exp_list(uid):
     """
     with get_redis_db("3") as db:
         db.set("{}-{}".format(exp_key, uid), 1, 86400)  # 24小时后解禁
+
+
+error_key = "error"
+
+
+def add_to_error_list(uid, res):
+    with get_redis_db("3") as db:
+        db.set("{}-{}".format(error_key, uid), res)
