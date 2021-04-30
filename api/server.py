@@ -97,7 +97,7 @@ def add_cookie_pool():
         tmp = c.partition("=")
         cookie[tmp[0].strip()] = tmp[2].strip()
     data = {
-        "cookie_dict": cookie,
+        "to_dict": cookie,
         "account": params.get("account"),
         "uid": params.get("uid"),
         "password": params.get("password"),

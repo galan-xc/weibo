@@ -25,6 +25,7 @@ class SenderSpider(RedisSpider):
         url = "https://m.weibo.cn/message/chat?uid={}&name=msgbox".format(data["uid"])
         cookie = get_alive_cookie()
         data.update({"cookie": cookie})
+        print(data)
         return self.make_requests_from_url(url, data)
 
     def make_requests_from_url(self, url, data):
@@ -35,7 +36,7 @@ class SenderSpider(RedisSpider):
             "Spider.start_requests method in future Scrapy releases. "
             "Please override Spider.start_requests method instead."
         )
-        cookie = data["cookie"]["dict"]
+        cookie = data["cookie"]["to_dict"]
         return Request(url, method="GET", meta=data, dont_filter=True, headers={
             ':authority': 'm.weibo.cn',
             ':method': 'GET',
@@ -69,7 +70,7 @@ class SenderSpider(RedisSpider):
         rmeta = response.meta
         rmeta.update({"XSRF-TOKEN": match_ret[0]})
 
-        cookie = rmeta["cookie"]["dict"]
+        cookie = rmeta["cookie"]["to_dict"]
         cookie.update({
             "XSRF-TOKEN": match_ret[0]
         })
@@ -104,7 +105,7 @@ class SenderSpider(RedisSpider):
                 "uid": rmeta["uid"],
                 "st": rmeta["XSRF-TOKEN"],
                 "_spr": "screen:1920x1080",
-            }, cookies=rmeta["cookie"]["dict"], meta=rmeta, callback=self.send_callback,
+            }, cookies=rmeta["cookie"]["to_dict"], meta=rmeta, callback=self.send_callback,
                               dont_filter=True)
         else:
             redis_data = rmeta.get("cookie")

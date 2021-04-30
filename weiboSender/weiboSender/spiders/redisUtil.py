@@ -98,15 +98,20 @@ def is_exp(uid):
 def get_alive_cookie():
     tmp = None
     ie = None
+    print("start....")
     with get_def_redis_db() as db:
         tmp = db.lpop_dict(alive_cookie_key)
         if tmp:
             ie = is_exp(tmp["uid"])
-        while tmp and ie:
+        print("...0")
+        print("t i ", tmp, ie)
+        while not tmp or ie:
+            print("...1")
             time.sleep(3)
             tmp = db.lpop_dict(alive_cookie_key)
             if tmp:
                 ie = is_exp(tmp["uid"])
+            print("t i ", tmp, ie)
     return tmp
 
 
