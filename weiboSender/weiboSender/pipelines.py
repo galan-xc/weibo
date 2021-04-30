@@ -31,12 +31,13 @@ class MysqlPipeline(object):
     def create_table(self):
         """创建MySQL表"""
         sql = """CREATE TABLE `send` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `msg` varchar(800) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ret` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"""
+) ENGINE=InnoDB AUTO_INCREMENT=602 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"""
         self.cursor.execute(sql)
 
     def open_spider(self, spider):

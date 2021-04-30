@@ -103,14 +103,14 @@ ITEM_PIPELINES = {
     'weiboSender.pipelines.MysqlPipeline': 301,
 }
 
-REDIS_HOST = '127.0.0.1'
+REDIS_HOST = os.environ.get('REDIS_HOST', "127.0.0.1")
 REDIS_PARAMS = {
     'password': os.environ.get('REDIS_PASSWORD', "123456"),
     "db": 1
 }
 REDIS_PORT = 6379
 
-MYSQL_HOST = '127.0.0.1'
+MYSQL_HOST = os.environ.get('MYSQL_HOST', "127.0.0.1")
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', "123456")

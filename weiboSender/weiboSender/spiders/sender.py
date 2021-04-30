@@ -9,7 +9,8 @@ from scrapy_redis.utils import bytes_to_str
 
 from weiboSender.items import WeibosenderItem
 from weiboSender.settings import REDIS_COOKIE_LIST_KEY
-from .redisUtil import get_def_redis_db
+from .redisUtil import get_alive_cookie, add_to_exp_list, add_alive_cookie
+
 
 class SenderSpider(RedisSpider):
     name = 'sender'
@@ -22,7 +23,8 @@ class SenderSpider(RedisSpider):
         data = ujson.loads(bytes_to_str(data, self.redis_encoding))
         self.logger.debug("trans data-> {}({})".format(data, type(data)))
         url = "https://m.weibo.cn/message/chat?uid={}&name=msgbox".format(data["uid"])
-
+        cookie = get_alive_cookie()
+        data.update({"cookie": cookie})
         return self.make_requests_from_url(url, data)
 
     def make_requests_from_url(self, url, data):
@@ -33,7 +35,7 @@ class SenderSpider(RedisSpider):
             "Spider.start_requests method in future Scrapy releases. "
             "Please override Spider.start_requests method instead."
         )
-        cookie = data["cookie"]
+        cookie = data["cookie"]["dict"]
         return Request(url, method="GET", meta=data, dont_filter=True, headers={
             ':authority': 'm.weibo.cn',
             ':method': 'GET',
@@ -63,8 +65,11 @@ class SenderSpider(RedisSpider):
         response_body = response.body.decode("utf-8")
         match_ret = re.findall("st: '(.*?)',", response_body)
         self.logger.debug("match_ret-> {}".format(match_ret))
+
         rmeta = response.meta
-        cookie = rmeta["cookie"]
+        rmeta.update({"XSRF-TOKEN": match_ret[0]})
+
+        cookie = rmeta["cookie"]["dict"]
         cookie.update({
             "XSRF-TOKEN": match_ret[0]
         })
@@ -76,13 +81,12 @@ class SenderSpider(RedisSpider):
                 "uid": response.meta["uid"],
                 "st": match_ret[0],
                 "_spr": "screen:1920x1080",
-            }, cookies=cookie, meta={
-                "uid": response.meta["uid"],
-                "msg": response.meta["msg"],
-            }, callback=self.send_callback, dont_filter=True)
+            }, cookies=cookie, meta=rmeta,
+                              callback=self.send_callback, dont_filter=True)
 
     def send_callback(self, response):
         data = ujson.loads(response.body)
+        rmeta = response.meta
         self.logger.debug("callback-> {}".format(data))
         item = WeibosenderItem()
         item["uid"] = response.meta["uid"]
@@ -91,3 +95,17 @@ class SenderSpider(RedisSpider):
         item["create_time"] = datetime.datetime.now()
         yield item
 
+        if data["ok"] != "1":
+            self.logger.info("redo: {}".format(rmeta["uid"]))
+            add_to_exp_list(rmeta["cookie"]["uid"])
+            url = "https://m.weibo.cn/api/chat/send"
+            yield FormRequest(url, formdata={
+                "content": rmeta["msg"],
+                "uid": rmeta["uid"],
+                "st": rmeta["XSRF-TOKEN"],
+                "_spr": "screen:1920x1080",
+            }, cookies=rmeta["cookie"]["dict"], meta=rmeta, callback=self.send_callback,
+                              dont_filter=True)
+        else:
+            redis_data = rmeta.get("cookie")
+            add_alive_cookie(redis_data)

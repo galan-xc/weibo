@@ -5,6 +5,7 @@ from flask import request
 import hashlib
 import datetime
 from utils.logUtil import logger
+from utils.redisUtil import get_def_redis_db
 from utils.dbUtil import get_def_mysql_db
 from utils.retUtil import InfoRet, ErrorRet
 
@@ -35,11 +36,6 @@ def add_cookie():
     password = params.get("password")
     uid = params.get("uid")
 
-    # cookie_list = cookie_str.split(";")
-    # cookie = {}
-    # for c in cookie_list:
-    #     tmp = c.partition("=")
-    #     cookie[tmp[0].strip()] = tmp[2].strip()
     with get_def_mysql_db() as db:
         cursor = db.cursor()
         sql = "insert into cookie(cuid, uid, account, password, cookie_str, create_time)" \
@@ -80,6 +76,42 @@ def len_cookie():
         "ret": ret
     })
 
+alive_cookie_key = "alive_cookie"
+exp_key = "EXP"
+
+@app.route("/cookie_pool/add")
+def add_cookie_pool():
+    params = request.args
+    if "cookie" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    if "account" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    if "password" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    if "uid" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    cookie_str = params.get("cookie")
+    cookie_list = cookie_str.split(";")
+    cookie = {}
+    for c in cookie_list:
+        tmp = c.partition("=")
+        cookie[tmp[0].strip()] = tmp[2].strip()
+    data = {
+        "cookie_dict": cookie,
+        "account": params.get("account"),
+        "uid": params.get("uid"),
+        "password": params.get("password"),
+    }
+    with get_def_redis_db() as db:
+        db.rpush_dict(alive_cookie_key, data)
+    return InfoRet(params)
+
+@app.route("/cookie_pool/len")
+def len_cookie_pool():
+    length = -1
+    with get_def_redis_db() as db:
+        length = db.llen(alive_cookie_key)
+    return InfoRet({"length": length})
 
 if __name__ == "__main__":
     app.run("0.0.0.0", 8002, debug=True)

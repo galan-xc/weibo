@@ -1,6 +1,7 @@
 import redis
 import ujson
 import os
+import time
 
 
 def _serialize_obj(obj):
@@ -59,12 +60,64 @@ class RedisDB(redis.Redis):
 
 
 password = os.environ.get('REDIS_PASSWORD', "123456")
+host = os.environ.get('REDIS_HOST', "127.0.0.1")
 
 
 def get_def_redis_db():
     db = None
     try:
-        db = RedisDB(host="127.0.0.1", port="6379", db="1", password=password)
+        db = RedisDB(host=host, port="6379", db="1", password=password)
     except BaseException as e:
         print("init redis connect error: {}".format(e))
     return db
+
+
+def get_redis_db(db):
+    db = None
+    try:
+        db = RedisDB(host=host, port="6379", db=db, password=password)
+    except BaseException as e:
+        print("init redis connect error: {}".format(e))
+    return db
+
+
+alive_cookie_key = "alive_cookie"
+exp_key = "EXP"
+
+
+def is_exp(uid):
+    """
+    key: EXP_uid
+    """
+    ret = None
+    with get_redis_db("3") as db:
+        ret = db.get("{}-{}".format(exp_key, uid))  # 24小时后解禁
+    return ret
+
+
+def get_alive_cookie():
+    tmp = None
+    ie = None
+    with get_def_redis_db() as db:
+        tmp = db.lpop_dict(alive_cookie_key)
+        if tmp:
+            ie = is_exp(tmp["uid"])
+        while tmp and ie:
+            time.sleep(3)
+            tmp = db.lpop_dict(alive_cookie_key)
+            if tmp:
+                ie = is_exp(tmp["uid"])
+    return tmp
+
+
+def add_alive_cookie(data):
+    with get_def_redis_db() as db:
+        db.rpush_dict(alive_cookie_key, data)
+
+
+def add_to_exp_list(uid):
+    """
+    key: EXP_uid
+    """
+    with get_redis_db("3") as db:
+        db.set("{}-{}".format(exp_key, uid), 1, 86400)  # 24小时后解禁
