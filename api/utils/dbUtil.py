@@ -9,3 +9,5 @@ def get_def_mysql_db():
 if __name__ == "__main__":
     with get_def_mysql_db() as db:
         print(db)
+
+
