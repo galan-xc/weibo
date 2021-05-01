@@ -2,7 +2,7 @@ from selenium import webdriver
 import time
 import requests
 
-cookie_update_url = "http://127.0.0.1:8002/cookie/update"
+cookie_update_url = "http://47.98.129.65:8002/cookie/update"
 
 
 class Sina:

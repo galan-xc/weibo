@@ -94,7 +94,7 @@ def add_cookie_pool():
     cookie_list = cookie_str.split(";")
     cookie = {}
     for c in cookie_list:
-        tmp = c.partition("=")
+        tmp = c.partition(":")
         cookie[tmp[0].strip()] = tmp[2].strip()
     data = {
         "to_dict": cookie,
