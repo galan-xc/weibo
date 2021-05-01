@@ -107,6 +107,32 @@ def add_cookie_pool():
         db.rpush_dict(alive_cookie_key, data)
     return InfoRet(params)
 
+@app.route("/cookie/update")
+def update_cookie_str():
+    ret = -1
+    params = request.args
+    if "cookie" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    if "account" not in params:
+        return ErrorRet(msg="Missing required parameter")
+    cookie_str = params.get("cookie")
+    account = params.get("account")
+    sql = 'UPDATE cookie SET cookie_str="{}" where account="{}";'.format(cookie_str, account)
+    with get_def_mysql_db() as db:
+        cursor = db.cursor()
+        try:
+            ret = cursor.execute(sql)
+            db.commit()
+        except BaseException as e:
+            ErrorRet(msg=str(e))
+    return InfoRet(data={
+        "cookie": cookie_str,
+        "account": account,
+        "ret": ret,
+    })
+
+
+
 @app.route("/cookie_pool/len")
 def len_cookie_pool():
     length = -1

@@ -40,19 +40,30 @@ class SenderSpider(RedisSpider):
         self.logger.debug("recv data-> {}({})".format(data, type(data)))
         data = ujson.loads(bytes_to_str(data, self.redis_encoding))
         self.logger.debug("trans data-> {}({})".format(data, type(data)))
-        url = "https://m.weibo.cn/message/chat?uid={}&name=msgbox".format(data["uid"])
+        url = "https://api.weibo.com/webim/2/direct_messages/new.json"
         cookie = get_alive_cookie()
         data.update({"cookie": cookie})
         print(data)
         return self.make_requests_from_url(url, data)
 
     def make_requests_from_url(self, url, data):
-
-        cookie_str = data["cookie"]["to_str"]
+        cookie_str = data["cookie"]["to_str"].strip()
+        cookie_dict = data["cookie"]["to_dict"]
+        header = self.send_hrader
+        header.update({"Cookie": cookie_str})
         return FormRequest(url,
                            meta=data,
                            dont_filter=True,
-                           headers=self.send_hrader.format(cookie_str),
+                           headers=header,
+                           formdata={
+                               "text": data["msg"],
+                               "uid": data["uid"],
+                               "extensions": '{"clientid":""}',
+                               "is_encoded": "0",
+                               "decodetime": "1",
+                               "source": "209678993",
+                           },
+                           cookies=cookie_dict,
                            callback=self.parse)
 
     def parse(self, response):
@@ -62,5 +73,6 @@ class SenderSpider(RedisSpider):
         if response.status != 200:
             add_to_error_list(response.meta["cookie"]["uid"], "{}".format(response.status))
             return
-
-
+        rsp_data = ujson.loads(response.body)
+        rsp_meta = response.meta
+        self.logger.info("send to {}, ret: {}".format(rsp_meta["uid"], rsp_data))
