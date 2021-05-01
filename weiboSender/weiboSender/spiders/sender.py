@@ -67,12 +67,19 @@ class SenderSpider(RedisSpider):
                            callback=self.parse)
 
     def parse(self, response):
-        print("response.request->", response.request.headers)
-        self.logger.debug("response.body-> {}\n{}".format(response.body, type(response.body)))
-        print(response.status)
+        # print("response.request->", response.request.headers)
+        # self.logger.debug("response.body-> {}\n{}".format(response.body, type(response.body)))
+        # print(response.status)
+        rsp_meta = response.meta
         if response.status != 200:
-            add_to_error_list(response.meta["cookie"]["uid"], "{}".format(response.status))
+            add_to_error_list(response.meta["cookie"]["uid"], "{}-{}".format(response.status, rsp_meta["uid"]))
             return
         rsp_data = ujson.loads(response.body)
-        rsp_meta = response.meta
+
         self.logger.info("send to {}, ret: {}".format(rsp_meta["uid"], rsp_data))
+        item = WeibosenderItem()
+        item["uid"] = rsp_meta["uid"]
+        item["msg"] = rsp_meta["msg"]
+        item["ret"] = rsp_data.get("sender_id", -1)
+        item["create_time"] = datetime.datetime.now()
+        yield item
