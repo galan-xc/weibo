@@ -91,6 +91,8 @@ def add_cookie_pool():
     if "uid" not in params:
         return ErrorRet(msg="Missing required parameter")
     cookie_str = params.get("cookie")
+    if cookie_str.endswith(";"):
+        cookie_str = cookie_str[:-1]
     cookie_list = cookie_str.split(";")
     cookie = {}
     for c in cookie_list:
