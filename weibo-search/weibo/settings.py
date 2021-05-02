@@ -49,13 +49,13 @@ FILES_STORE = './'
 # 配置MongoDB数据库
 # MONGO_URI = 'localhost'
 # 配置MySQL数据库，以下为默认配置，可以根据实际情况更改，程序会自动生成一个名为weibo的数据库，如果想换其它名字请更改MYSQL_DATABASE值
-MYSQL_HOST = 'ip'
+MYSQL_HOST = os.environ.get('MYSQL_HOST', "127.0.0.1")
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', "123456")
 MYSQL_DATABASE = 'weibo'
 
-REDIS_HOST = "ip"
+REDIS_HOST = os.environ.get('REDIS_HOST', "127.0.0.1")
 REDIS_PORT = 6379
 REDIS_DB_INDEX = 1
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', "123456")
