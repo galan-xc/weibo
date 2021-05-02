@@ -9,12 +9,12 @@ TELNETCONSOLE_ENABLED = False
 # LOG_LEVEL = 'ERROR'
 LOG_LEVEL = 'DEBUG'
 # 访问完一个页面再访问下一个时需要等待的时间，默认为10秒
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 2
 DEFAULT_REQUEST_HEADERS = {
     'Accept':
         'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
-    'cookie': r'*'
+    'cookie': r'SCF=AmFIH8yiETM6trGz9teUDEk_YjWpFv8hd7LSX0oX9Ue2WYHwPNpfqt-zFrFyHlJ_anfBLMAOQ42tuA6s0r8w42E.; SUB=_2A25Nia9LDeRhGeNH71YX9C3PyTiIHXVvdTEDrDV6PUJbkdANLUrtkW1NSrnvOG2utxE-DhsxwI57ms4F2s6Wgbta; _T_WM=87624427246; WEIBOCN_FROM=1110006030; MLOGIN=1; M_WEIBOCN_PARAMS=oid%3D%25E6%2597%25A5%25E6%259C%25AC%26lfid%3D2304133592105682_-_WEIBO_SECOND_PROFILE_WEIBO%26luicode%3D20000174%26uicode%3D20000174; XSRF-TOKEN=923e71'
 }
 ITEM_PIPELINES = {
     'weibo.pipelines.DuplicatesPipeline': 300,
@@ -34,7 +34,7 @@ WEIBO_TYPE = 0
 CONTAIN_TYPE = 0
 # 筛选微博的发布地区，精确到省或直辖市，值不应包含“省”或“市”等字，如想筛选北京市的微博请用“北京”而不是“北京市”，想要筛选安徽省的微博请用“安徽”而不是“安徽省”，可以写多个地区，
 # 具体支持的地名见region.py文件，注意只支持省或直辖市的名字，省下面的市名及直辖市下面的区县名不支持，不筛选请用”全部“
-REGION = ['全部']
+REGION = ['湖北']
 # 搜索的起始日期，为yyyy-mm-dd形式，搜索结果包含该日期
 START_DATE = '2021-04-16'
 # 搜索的终止日期，为yyyy-mm-dd形式，搜索结果包含该日期

@@ -44,10 +44,10 @@ class MysqlPipeline(object):
   `user_verified_reason` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_description` varchar(450) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `gender` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `statuses_count` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `statuses_count` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `source` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20808 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"""
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"""
         self.cursor.execute(sql)
 
     def open_spider(self, spider):
