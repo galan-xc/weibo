@@ -46,14 +46,14 @@ class FetchSpider(RedisSpider):
     def parse(self, response):
         rsp_date = ujson.loads(response.body)
         rsp_meta = response.meta
-        self.logger.debug("rsp_date-> {}".format(rsp_date))
-        self.logger.debug("response.meta-> {}".format(response.meta))
+        # self.logger.debug("parse:rsp_date-> {}".format(rsp_date))
+        # self.logger.debug("parse:response.meta-> {}".format(response.meta))
         if rsp_date["ok"] != 1:
             return
 
         if "data" in rsp_date["data"]:
             for ctitm in rsp_date["data"]["data"]:
-                self.logger.debug("ctitm-> {}".format(ctitm))
+                # self.logger.debug("ctitm-> {}".format(ctitm))
                 item = CmtfetcherItem()
                 item["wid"] = response.meta["id"]
                 item["comment_id"] = ctitm["id"]
@@ -65,34 +65,17 @@ class FetchSpider(RedisSpider):
                 item["user_verified"] = ctitm["user"]["verified"]
                 item["user_verified_reason"] = ctitm["user"].get("verified_reason", "")
                 item["user_description"] = ctitm["user"]["description"]
-                # yield item
-                rsp_meta.update({
-                    "item": item
-                })
                 yield Request(
                     "https://m.weibo.cn/profile/info?uid={}".format(ctitm["user"]["id"]),
-                    meta=rsp_meta,
+                    meta={
+                        "item": item
+                    },
                     callback=self.more_info,
+                    dont_filter=True,
                 )
 
-            max_id = rsp_date["data"].get("max_id", "0")
-            if int(max_id) > 0:
-                url = "https://m.weibo.cn/comments/hotflow?id={}&mid={}&max_id={}&max_id_type=0".format(
-                    response.meta["id"], response.meta["id"], max_id)
-                yield Request(url,
-                              meta={
-                                  'id': response.meta["id"],
-                              },
-                              callback=self.parse)
-        else:
-            url = "https://m.weibo.cn/comments/hotflow?id={}&mid={}&max_id_type=0".format(
-                response.meta["id"], response.meta["id"])
-            yield Request(url, meta={
-                'id': response.meta["id"],
-            }, callback=self.parse, dont_filter=False)
-
     def more_info(self, response):
-        self.logger.debug("-> response.body: {}".format(response.body))
+        # self.logger.debug("parse:response.body: {}".format(response.body))
         rsp_data = ujson.loads(response.body)
         rsp_meta = response.meta
         item = rsp_meta["item"]
