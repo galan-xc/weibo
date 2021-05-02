@@ -67,7 +67,7 @@ class Sina:
 
 if __name__ == "__main__":
     # sina = Sina("txk4sp@sina.com", "uhg928")
-    sina = Sina("alb7rv@sina.com", "ymc321")
+    sina = Sina("dcn9dd@sina.com", "pct263")
     sina.login_mail()
     sina.open_weibo()
     sina.update()

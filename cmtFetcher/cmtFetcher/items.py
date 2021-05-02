@@ -18,4 +18,7 @@ class CmtfetcherItem(scrapy.Item):
     user_verified = scrapy.Field()
     user_verified_reason = scrapy.Field()
     user_description = scrapy.Field()
+    gender = scrapy.Field()
+    statuses_count = scrapy.Field()
+    source = scrapy.Field()
 
