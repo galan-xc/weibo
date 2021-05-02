@@ -34,13 +34,6 @@ class FetchSpider(RedisSpider):
             return self.make_requests_from_url(url, data)
 
     def make_requests_from_url(self, url, data):
-        """ This method is deprecated. """
-        warnings.warn(
-            "Spider.make_requests_from_url method is deprecated: "
-            "it will be removed and not be called by the default "
-            "Spider.start_requests method in future Scrapy releases. "
-            "Please override Spider.start_requests method instead."
-        )
         return Request(url, meta=data, dont_filter=True)
 
     def parse(self, response):
@@ -73,6 +66,16 @@ class FetchSpider(RedisSpider):
                     callback=self.more_info,
                     dont_filter=True,
                 )
+            max_id = rsp_date["data"].get("max_id", "0")
+            if int(max_id) > 0:
+                url = "https://m.weibo.cn/comments/hotflow?id={}&mid={}&max_id={}&max_id_type=0".format(
+                    response.meta["id"], response.meta["id"], max_id)
+                yield Request(
+                    url,
+                    meta={
+                        'id': response.meta["id"],
+                    },
+                    callback=self.parse)
 
     def more_info(self, response):
         # self.logger.debug("parse:response.body: {}".format(response.body))
