@@ -119,7 +119,7 @@ def update_cookie_str():
         return ErrorRet(msg="Missing required parameter")
     cookie_str = params.get("cookie")
     account = params.get("account")
-    sql = 'UPDATE cookie SET cookie_str="{}" where account="{}";'.format(cookie_str, account)
+    sql = 'UPDATE cookie SET cookie_str="{}", update_time="{}" where account="{}";'.format(cookie_str, datetime.datetime.now(), account)
     with get_def_mysql_db() as db:
         cursor = db.cursor()
         try:
