@@ -1,7 +1,7 @@
 import requests
 
 rows = None
-with open("190.txt", 'r') as fp:
+with open("300.txt", 'r') as fp:
     rows = fp.readlines()
 
 for row in rows:
