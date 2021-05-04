@@ -51,7 +51,7 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'weiboSender.middlewares.WeibosenderDownloaderMiddleware': 543,
-    'weiboSender.middlewares.ProxyDownloaderMiddleware': 200,
+    # 'weiboSender.middlewares.ProxyDownloaderMiddleware': 200,
 }
 
 # Enable or disable extensions
@@ -88,7 +88,7 @@ DOWNLOADER_MIDDLEWARES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 REDIRECT_ENABLED = False  # 关掉重定向, 不会重定向到新的地址
-HTTPERROR_ALLOWED_CODES = [301, 302]  # 返回301, 302时, 按正常返回对待, 可以正常写入cookie
+HTTPERROR_ALLOWED_CODES = [301, 302, 400]  # 返回301, 302时, 按正常返回对待, 可以正常写入cookie
 
 # =========== scrapy-redis ============
 # Enables scheduling storing requests queue in redis.
