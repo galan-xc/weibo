@@ -1,23 +1,6 @@
-import pymysql
-import os
 import requests
+from dbutil import get_def_mysql_db, get_all_cookie
 
-host = os.environ.get('MYSQL_HOST', "127.0.0.1")
-password = os.environ.get('MYSQL_PASSWORD', "127.0.0.1")
-def get_def_mysql_db():
-    db = pymysql.connect(host=host, user="root", password=password, database="weibo", port=3306)
-    return db
-
-def get_all_cookie(db):
-    ret = None
-    cursor = db.cursor()
-    sql = "select * from cookie;"
-    try:
-        exe_ret = cursor.execute(sql)
-        ret = cursor.fetchall()
-    except BaseException as e:
-        print(e)
-    return ret
 
 def push(tup):
     rsp = requests.get("http://47.98.129.65:8002/cookie_pool/add", params={
@@ -32,12 +15,8 @@ def push(tup):
 if __name__ == "__main__":
     tups = []
     with get_def_mysql_db() as db:
-        tmp  = get_all_cookie(db)
+        tmp = get_all_cookie(db)
         if tmp:
             tups = tmp
     for tup in tups:
         push(tup)
-
-
-
-

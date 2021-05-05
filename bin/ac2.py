@@ -16,8 +16,6 @@ cookie_update_url = "http://47.98.129.65:8002/cookie/update"
 def get_auth_code(url):
     img_rsp = requests.get(url)
     print(img_rsp)
-    # with open("pin.png", 'wb')as fp:
-    #     fp.write(img_rsp.content)
     base_data = base64.encodebytes(img_rsp.content)
     data = {"username": "muyibei", "password": "ababy982028", "typeid": 3, "image": base_data.decode()}
     ocr_rsp = requests.post("http://api.ttshitu.com/predict", json=data)
@@ -80,29 +78,12 @@ class Sina:
             self.driver.find_element_by_xpath('//div/a[@class="loginBtn"]').click()
         except BaseException as e:
             print(e)
-        time.sleep(3)
-        if "index.php" in self.driver.current_url:
-            print("登入成功")
-        else:
-            with open("error.txt", 'a')as fp:
-                fp.write("{}\t{}\n".format(self.username, self.password))
-            print("登入失败")
-            return False
-
-        # # 等待登入
-        # input("输入验证码后按任意键继续!!!")
-        cookies = self.driver.get_cookies()
-        cookie_dict = {}
-        print(cookies)
-        for cookie in cookies:
-            cookie_dict[cookie["name"]] = cookie["value"]
-        print(cookie_dict)
-        return cookie_dict
+        time.sleep(1)
 
     def open_weibo(self):
         print("start open weibo...")
         login = self.driver.get("https://weibo.com/")
-        time.sleep(2)
+        input("按任意键继续")
         cookies = self.driver.get_cookies()
         cookie_dict = {}
         print(cookies)
@@ -127,9 +108,9 @@ def sina_event(account, password):
     print(account, password)
     sina = Sina(account, password)
 
-    if sina.login_mail():
-        sina.open_weibo()
-        sina.update()
+    sina.login_mail()
+    sina.open_weibo()
+    sina.update()
     sina.driver.close()
 
 
