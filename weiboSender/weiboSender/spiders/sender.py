@@ -72,7 +72,12 @@ class SenderSpider(RedisSpider):
         # print(response.status)
         rsp_meta = response.meta
         if response.status != 200:
-            add_to_error_list(response.meta["cookie"]["uid"], "{}-{}".format(response.status, rsp_meta["uid"]))
+            ct = None
+            try:
+                ct = response.body
+            except BaseException as e:
+                print(e)
+            add_to_error_list(response.meta["cookie"]["uid"], "{}-{}-{}".format(response.status, rsp_meta["uid"], ct))
             return
         rsp_data = ujson.loads(response.body)
 

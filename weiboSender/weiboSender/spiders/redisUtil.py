@@ -99,7 +99,7 @@ def get_alive_cookie():
     tmp = None
     ie = None
     # print("start....")
-    print("获取cookie")
+    print("获取cookie...")
     with get_def_redis_db() as db:
         tmp = db.lpop_dict(alive_cookie_key)
         if tmp:
